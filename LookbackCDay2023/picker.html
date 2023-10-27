@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokémon Bingo Random Pokémon Picker</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+			font-family: 'Roboto', sans-serif;
+        }
+
+        #randomPokemonContainer {
+            width: 66.6667%;
+            background: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #randomizerInfo {
+            padding: 20px;
+            text-align: center;
+        }
+
+        #randomPokemonWrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #randomPokemonName {
+            font-size: 24px;
+            margin: 20px;
+        }
+
+        #randomPokemonImageContainer {
+            display: none;
+            width: 300px;
+            height: 300px;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+
+        #randomPokemonImage {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+			border-radius: 4px;
+        }
+
+        #pokemonLogContainer {
+            width: 33.3333%;
+            background: #e0e0e0;
+            overflow: hidden; /* Hide the horizontal scrollbar */
+        }
+
+        #pokemonLog {
+            padding: 20px;
+            list-style: none;
+            columns: 2; /* Split the log into two columns */
+			break-inside: avoid-column
+			
+        }
+		
+		h1 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+        }
+
+		h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            padding: 20px;
+        }
+
+		p {
+            font-size: 16px;
+            color: #777;
+		}
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Preload images with hidden image elements */
+        #imagePreloader {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preload images with hidden image elements -->
+    <div id="imagePreloader">
+        <!-- JavaScript will generate image elements based on the allPokemon list -->
+    </div>
+
+    <div id="randomPokemonContainer">
+        <div id="randomizerInfo">
+            <h1>Pokémon Bingo Random Pokémon Picker</h1>
+            <p>Click the button to pick a random Pokémon for your Pokémon Bingo game.</p>
+        </div>
+
+        <div id="randomPokemonWrapper">
+            <p id="randomPokemonName">Let's get started! Press the randomize button to pick the first one!</p>
+            <div id="randomPokemonImageContainer">
+                <img id="randomPokemonImage" src="" alt="Random Pokémon">
+            </div>
+            <button onclick="animateRandomSelection()">Randomize</button>
+        </div>
+    </div>
+
+    <div id="pokemonLogContainer">
+        <h2>Pokémon Log</h2>
+        <ul id="pokemonLog"></ul>
+    </div>
+
+    <script>
+        const allPokemon = [
+            "Poliwrath", "Pupitar", "Quagsire", "Quilladin", "Slowbro", "Slowpoke", "Squirtle",
+            "Sunglasses Blastoise", "Sunglasses Squirtle", "Sunglasses Wartortle", "Swinub", "Timburr",
+            "Togekiss", "Togepi", "Togetic", "Tyranitar", "Vikavolt", "Wartortle", "Wooper", "Ampharos",
+            "Axew", "Blastoise", "Braixen", "Charizard", "Charjabug", "Charmander", "Charmeleon", "Chesnaught",
+            "Chespin", "Clodsire", "Conkeldurr", "Delphox", "Fennekin", "Flaffy", "Fraxure", "Froakie",
+            "Frogadier", "Galarian Slowbro", "Galarian Slowpoke", "Greninja", "Grubbin", "Gurdurr", "Haxorus",
+            "Larvitar", "Mamoswine", "Mareep", "Noibat", "Noivern", "Paldean Wooper", "Piloswine", "Politoed",
+            "Poliwag", "Poliwirl"
+        ];
+
+        const imagePreloader = document.getElementById("imagePreloader");
+
+        allPokemon.forEach(pokemonName => {
+            const imageUrl = `images/${pokemonName.replace(/ /g, '_')}.png`;
+            const imageElement = document.createElement("img");
+            imageElement.src = imageUrl;
+            imageElement.alt = pokemonName;
+            imagePreloader.appendChild(imageElement);
+        });
+
+        const randomPokemonNameElement = document.getElementById("randomPokemonName");
+        const randomPokemonImageContainer = document.getElementById("randomPokemonImageContainer");
+        const randomPokemonImage = document.getElementById("randomPokemonImage");
+        const pokemonLog = document.getElementById("pokemonLog");
+
+        const selectedPokemonLog = [];
+        const availablePokemon = [...allPokemon];
+        let isAnimating = false;
+        let isFirstPokemonPicked = false;
+
+        function animateRandomSelection() {
+            if (isAnimating) return;
+            if (availablePokemon.length === 0) {
+                alert("All Pokémon have been picked!");
+                return;
+            }
+
+            isAnimating = true;
+
+            const animationDuration = 1000;
+            const intervalDuration = 50;
+            const animationSteps = animationDuration / intervalDuration;
+            const randomPokemonWrapper = document.getElementById("randomPokemonWrapper");
+            const randomPokemonImageContainer = document.getElementById("randomPokemonImageContainer");
+
+            let step = 0;
+
+            const animationInterval = setInterval(() => {
+                if (!isFirstPokemonPicked) {
+                    randomPokemonImageContainer.style.display = "flex";
+                    isFirstPokemonPicked = true;
+                }
+                step++;
+                if (step >= animationSteps) {
+                    clearInterval(animationInterval);
+
+                    const randomIndex = Math.floor(Math.random() * availablePokemon.length);
+                    const randomPokemonName = availablePokemon[randomIndex];
+                    const imageUrl = `images/${randomPokemonName.replace(/ /g, '_')}.png`;
+
+                    selectedPokemonLog.push(randomPokemonName);
+                    availablePokemon.splice(randomIndex, 1);
+
+                    randomPokemonNameElement.textContent = "Random Pokémon: " + randomPokemonName;
+
+                    randomPokemonImage.src = imageUrl;
+                    updatePokemonLog();
+                    randomPokemonWrapper.style.transform = "scale(1)";
+                    isAnimating = false;
+                } else {
+                    const randomIndex = Math.floor(Math.random() * availablePokemon.length);
+                    const randomPokemonName = availablePokemon[randomIndex];
+                    const imageUrl = `images/${randomPokemonName.replace(/ /g, '_')}.png`;
+
+                    randomPokemonNameElement.textContent = "Random Pokémon: " + randomPokemonName;
+                    randomPokemonImage.src = imageUrl;
+                }
+            }, intervalDuration);
+        }
+
+        function updatePokemonLog() {
+            const pokemonLog = document.getElementById("pokemonLog");
+            pokemonLog.innerHTML = "";
+
+            for (const selectedPokemonName of selectedPokemonLog) {
+                const listItem = document.createElement("li");
+                listItem.textContent = selectedPokemonName;
+                pokemonLog.appendChild(listItem);
+            }
+        }
+    </script>
+</body>
+</html>
