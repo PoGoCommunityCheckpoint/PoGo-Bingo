@@ -14,7 +14,7 @@
         }
 
         #randomPokemonContainer {
-            width: 100%; /* Updated width for mobile */
+            width: 66.6667%;
             background: #F5F5F5;
             display: flex;
             flex-direction: column;
@@ -45,8 +45,8 @@
             display: none;
             width: 300px;
             height: 300px;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
+            justify-content: center;
+            align-items: center;
         }
 
         #randomPokemonImage {
@@ -57,7 +57,7 @@
         }
 
         #pokemonLogContainer {
-            width: 100%; /* Updated width for mobile */
+            width: 33.3333%;
             background: #e0e0e0;
             overflow: hidden;
             box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
@@ -70,26 +70,25 @@
             list-style: none;
             columns: 2;
             break-inside: avoid-column;
-			
         }
-		
-		h1 {
+
+        h1 {
             font-size: 24px;
             font-weight: 500;
             color: #333;
         }
 
-		h2 {
+        h2 {
             font-size: 20px;
             font-weight: 500;
             color: #333;
             padding: 20px;
         }
 
-		p {
+        p {
             font-size: 16px;
             color: #777;
-		}
+        }
 
         button {
             padding: 10px 20px;
@@ -105,14 +104,19 @@
         #imagePreloader {
             display: none;
         }
-		
+
         @media (max-width: 768px) {
-            #randomPokemonWrapper {
-                padding: 10px;
+            #randomPokemonContainer {
+                width: 100%;
+            }
+
+            #pokemonLogContainer {
+                width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Preload images with hidden image elements -->
     <div id="imagePreloader">
